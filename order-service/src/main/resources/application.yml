@@ -1,0 +1,37 @@
+server:
+  port: 9192
+
+spring:
+  cloud:
+    stream:
+      function:
+        definition: customerCheckEventPublisher;customerCheckEventProcessor;creditCheckEventPublisher;creditCheckEventProcessor;orderRollbackEventPublisher;
+      bindings:
+        customerCheckEventPublisher-out-0:
+          destination: order-customer
+        customerCheckEventProcessor-in-0:
+          destination: customer-order
+        creditCheckEventPublisher-out-0:
+          destination: order-credit
+        creditCheckEventProcessor-in-0:
+          destination: credit-order
+        orderRollbackEventPublisher-out-0:
+          destination: order-rollback
+  datasource:
+    url: jdbc:mysql://${DOCKER_HOST_IP:localhost}:9185/order_db?createDatabaseIfNotExist=true
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: root
+    password: mysqlpw
+    maximum-pool-size: 100
+  jpa:
+    hibernate:
+      ddl-auto: create
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+    generate-ddl: true
+
+logging:
+  level:
+    root: ERROR
+    org.springframework.web: ERROR
+    swa.order-service: ERROR
+    org.hibernate: ERROR

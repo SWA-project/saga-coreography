@@ -1,0 +1,33 @@
+server:
+  port: 9191
+
+spring:
+  cloud:
+    stream:
+      function:
+        definition: creditOrderEventProcessor
+      bindings:
+        creditOrderEventProcessor-in-0:
+          destination: order-credit
+        creditOrderEventProcessor-out-0:
+          destination: credit-order
+  datasource:
+    url: jdbc:mysql://${DOCKER_HOST_IP:localhost}:9187/credit_db?createDatabaseIfNotExist=true
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: root
+    password: mysqlpw
+    maximum-pool-size: 100
+    initialization-mode: always
+  jpa:
+    hibernate:
+      ddl-auto: create
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+    generate-ddl: true
+    defer-datasource-initialization: true
+
+logging:
+  level:
+    root: ERROR
+    org.springframework.web: ERROR
+    swa.order-service: ERROR
+    org.hibernate: ERROR
